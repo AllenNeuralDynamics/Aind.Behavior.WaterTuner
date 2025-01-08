@@ -2,9 +2,12 @@ import datetime
 import os
 
 from aind_behavior_services.session import AindBehaviorSessionModel
-from aind_behavior_device_water_tuner.task_logic import AindBehaviorWaterTunerParameters, AindBehaviorWaterTunerTaskLogic
-import aind_behavior_device_water_tuner.rig import AindBehaviorWaterTunerRig
 
+from aind_behavior_device_water_tuner.rig import AindBehaviorWaterTunerRig
+from aind_behavior_device_water_tuner.task_logic import (
+    AindBehaviorWaterTunerParameters,
+    AindBehaviorWaterTunerTaskLogic,
+)
 
 
 def mock_session() -> AindBehaviorSessionModel:
@@ -23,17 +26,13 @@ def mock_session() -> AindBehaviorSessionModel:
 
 
 def mock_rig() -> AindBehaviorWaterTunerRig:
-
     return AindBehaviorWaterTunerRig(
         rig_name="test_rig",
     )
 
 
 def mock_task_logic() -> AindBehaviorWaterTunerTaskLogic:
-
-    return AindBehaviorWaterTunerTaskLogic(
-        task_parameters=AindBehaviorWaterTunerParameters()
-    )
+    return AindBehaviorWaterTunerTaskLogic(task_parameters=AindBehaviorWaterTunerParameters())
 
 
 def main(path_seed: str = "./local/{schema}.json"):

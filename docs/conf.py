@@ -80,4 +80,4 @@ def export_model_diagram(model: BaseModel, root: str = "_static") -> None:
 
 
 _diagram_root = "_static"
-#export_model_diagram(MyPydanticBaseModel, _diagram_root)
+# export_model_diagram(MyPydanticBaseModel, _diagram_root)

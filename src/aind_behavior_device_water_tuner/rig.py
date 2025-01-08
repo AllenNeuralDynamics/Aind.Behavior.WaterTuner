@@ -1,10 +1,9 @@
 from typing import Literal
 
-from aind_behavior_services.rig import AindBehaviorRigModel
-from aind_behavior_services.calibration import aind_manipulator
 import aind_behavior_services.rig as rig
+from aind_behavior_services.calibration import aind_manipulator
+from aind_behavior_services.rig import AindBehaviorRigModel
 from pydantic import Field
-
 
 __version__ = "0.1.0"
 

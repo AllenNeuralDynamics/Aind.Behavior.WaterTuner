@@ -25,10 +25,10 @@ class AindBehaviorWaterTunerParameters(TaskParameters):
         title="Repeat count",
     )
 
+
 class AindBehaviorWaterTunerTaskLogic(AindBehaviorTaskLogicModel):
     """WaterTuner operation control model that is used to run a calibration data acquisition workflow"""
 
     name: str = Field(default="WaterValveCalibrationLogic", title="Task name")
     version: Literal[__version__] = __version__
     task_parameters: AindBehaviorWaterTunerParameters = Field(..., title="Task parameters", validate_default=True)
-
