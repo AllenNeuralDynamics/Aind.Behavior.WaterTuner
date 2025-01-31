@@ -8,7 +8,7 @@ from aind_behavior_services.utils import (
     snake_to_pascal_case,
 )
 
-from aind_behavior_device_water_tuner import rig, task_logic
+from aind_behavior_device_water_tuner import data_types, rig, task_logic
 
 SCHEMA_ROOT = Path("./src/DataSchemas/")
 EXTENSIONS_ROOT = Path("./src/Extensions/")
@@ -20,6 +20,7 @@ def main():
         task_logic.AindBehaviorWaterTunerTaskLogic,
         rig.AindBehaviorWaterTunerRig,
         AindBehaviorSessionModel,
+        data_types.ExtensionDataTypes,
     ]
 
     for model in models:

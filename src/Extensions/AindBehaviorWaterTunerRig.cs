@@ -1459,7 +1459,7 @@ namespace AindBehaviorWaterTuner.Rig
     public partial class AindBehaviorWaterTunerRig
     {
     
-        private string _aindBehaviorServicesPkgVersion = "0.8.9";
+        private string _aindBehaviorServicesPkgVersion = "0.9.0";
     
         private string _version = "0.1.0";
     
