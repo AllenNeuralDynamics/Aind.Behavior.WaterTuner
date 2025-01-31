@@ -63,7 +63,7 @@ def mock_rig() -> AindBehaviorWaterTunerRig:
 def mock_task_logic() -> AindBehaviorWaterTunerTaskLogic:
     return AindBehaviorWaterTunerTaskLogic(
         task_parameters=AindBehaviorWaterTunerParameters(
-            repeat_count=200, valve_open_interval=0.2, valve_open_time=list(range(0.02, 0.1, 0.02))
+            repeat_count=200, valve_open_interval=0.2, valve_open_time=[0.02, 0.05, 0.1]
         )
     )
 
