@@ -1183,7 +1183,7 @@ Item2 as Weight)</scr:Expression>
         </Workflow>
       </Expression>
       <Expression xsi:type="VisualizerMapping">
-        <VisualizerType xsi:type="TypeMapping" TypeArguments="zg:LineGraphVisualizer" />
+        <VisualizerType xsi:type="TypeMapping" TypeArguments="gui:TableLayoutPanelVisualizer" />
       </Expression>
       <Expression xsi:type="IncludeWorkflow" Path="Extensions\LauncherControl.bonsai" />
       <Expression xsi:type="VisualizerMapping">
@@ -1269,7 +1269,9 @@ Item2 as Weight)</scr:Expression>
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="VisualizerMapping" />
+      <Expression xsi:type="VisualizerMapping">
+        <VisualizerType xsi:type="TypeMapping" TypeArguments="gui:TableLayoutPanelVisualizer" />
+      </Expression>
       <Expression xsi:type="gui:TableLayoutPanelBuilder">
         <gui:Name>UserInterface</gui:Name>
         <gui:Enabled>true</gui:Enabled>
