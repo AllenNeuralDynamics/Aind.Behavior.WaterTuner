@@ -1,13 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Bonsai.Core" Version="2.8.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
-  </ItemGroup>
-
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Bonsai.Core" Version="2.8.5" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
+    </ItemGroup>
 </Project>

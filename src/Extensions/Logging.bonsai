@@ -11,6 +11,8 @@
                  xmlns:p5="clr-namespace:AindBehaviorWaterTuner.TaskLogic;assembly=Extensions"
                  xmlns:p6="clr-namespace:AindBehaviorWaterTuner.Rig;assembly=Extensions"
                  xmlns:p7="clr-namespace:AllenNeuralDynamics.AindBehaviorServices.DataTypes;assembly=AllenNeuralDynamics.AindBehaviorServices"
+                 xmlns:p8="clr-namespace:AindBehaviorWaterTuner.DataTypes;assembly=Extensions"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -623,11 +625,48 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>CalibrationModel</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p8:SerializeToJson" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="io:WriteLine" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Name" DisplayName="SubjectName" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>LoggingRootPath</Name>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>{0}/water_calibration.json</Format>
+                    <Selector />
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Path" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="io:WriteAllText">
+                      <io:Overwrite>false</io:Overwrite>
+                      <io:Append>false</io:Append>
+                    </Combinator>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
                   <Edge From="1" To="2" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="15" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source2" />
                 </Edges>
               </Workflow>
             </Expression>
