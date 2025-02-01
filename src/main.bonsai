@@ -18,9 +18,9 @@
                  xmlns:p9="clr-namespace:AllenNeuralDynamics.AindManipulator;assembly=AllenNeuralDynamics.AindManipulator"
                  xmlns:p10="clr-namespace:AindBehaviorWaterTuner.DataTypes;assembly=Extensions"
                  xmlns:p11="clr-namespace:;assembly=Extensions"
+                 xmlns:gui="clr-namespace:Bonsai.Gui;assembly=Bonsai.Gui"
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:zg="clr-namespace:Bonsai.Gui.ZedGraph;assembly=Bonsai.Gui.ZedGraph"
-                 xmlns:gui="clr-namespace:Bonsai.Gui;assembly=Bonsai.Gui"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -862,10 +862,10 @@
               <Combinator xsi:type="rx:Concat" />
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
-              <Name>Calibrations</Name>
+              <Name>Measurement</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>Calibrations</Name>
+              <Name>Measurement</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:ToArray" />
@@ -924,74 +924,237 @@
         <Name>DataVisualization</Name>
         <Workflow>
           <Nodes>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>Calibrations</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>ValveOpenTime</Selector>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>WaterWeight</Selector>
-            </Expression>
-            <Expression xsi:type="rx:SelectMany">
-              <Name>Average</Name>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>Label</Name>
               <Workflow>
                 <Nodes>
-                  <Expression xsi:type="WorkflowInput">
-                    <Name>Source1</Name>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Measurement</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Merge" />
                   </Expression>
+                  <Expression xsi:type="rx:Accumulate" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Measurement</Name>
+                  </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Average" />
+                    <Combinator xsi:type="rx:ElementIndex" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Index</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>Item1 &gt; Item2 ? Item2 : Item1</scr:Expression>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Item2</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>Calibrating {0} / {1}</Format>
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Text" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="gui:ButtonBuilder">
+                    <gui:Name>Ongoing</gui:Name>
+                    <gui:Enabled>false</gui:Enabled>
+                    <gui:Visible>true</gui:Visible>
+                    <gui:Font>Microsoft Sans Serif, 15.75pt</gui:Font>
+                    <gui:Text />
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="1" To="4" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source2" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="9" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source2" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="9" To="11" Label="Source1" />
+                  <Edge From="10" To="12" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source2" />
+                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Zip" />
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="SubscribeSubject">
+              <Name>WeightMeasurement</Name>
             </Expression>
-            <Expression xsi:type="InputMapping">
-              <PropertyMappings>
-                <Property Name="X" Selector="Item1" />
-                <Property Name="Y" Selector="Item2" />
-              </PropertyMappings>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="GroupWorkflow">
+              <Name>MeasurementPlot</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Measurement</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>ValveOpenTime</Selector>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>WaterWeight</Selector>
+                  </Expression>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>Average</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Merge" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Average" />
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="InputMapping">
+                    <PropertyMappings>
+                      <Property Name="X" Selector="Item1" />
+                      <Property Name="Y" Selector="Item2" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:CreatePoint2f">
+                      <cv:X>0</cv:X>
+                      <cv:Y>0</cv:Y>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="zg:LineGraphBuilder">
+                    <zg:SymbolType>Square</zg:SymbolType>
+                    <zg:LineWidth>1</zg:LineWidth>
+                    <zg:CurveSettings />
+                    <zg:Capacity>1000</zg:Capacity>
+                    <zg:XMin xsi:nil="true" />
+                    <zg:XMax xsi:nil="true" />
+                    <zg:YMin xsi:nil="true" />
+                    <zg:YMax xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="VisualizerMapping" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>WeightMeasurement</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>DataFrame.Weight</Selector>
+                  </Expression>
+                  <Expression xsi:type="zg:RollingGraphBuilder">
+                    <zg:SymbolType>None</zg:SymbolType>
+                    <zg:LineWidth>1</zg:LineWidth>
+                    <zg:CurveSettings />
+                    <zg:Capacity>100</zg:Capacity>
+                    <zg:Min xsi:nil="true" />
+                    <zg:Max xsi:nil="true" />
+                  </Expression>
+                  <Expression xsi:type="VisualizerMapping" />
+                  <Expression xsi:type="gui:TableLayoutPanelBuilder">
+                    <gui:Name>OnlinePlots</gui:Name>
+                    <gui:Enabled>true</gui:Enabled>
+                    <gui:Visible>true</gui:Visible>
+                    <gui:ColumnCount>2</gui:ColumnCount>
+                    <gui:RowCount>1</gui:RowCount>
+                    <gui:ColumnStyles />
+                    <gui:RowStyles />
+                    <gui:CellSpans />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="0" To="2" Label="Source1" />
+                  <Edge From="1" To="4" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source2" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="13" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source2" />
+                  <Edge From="13" To="14" Label="Source1" />
+                </Edges>
+              </Workflow>
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="cv:CreatePoint2f">
-                <cv:X>0</cv:X>
-                <cv:Y>0</cv:Y>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="zg:LineGraphBuilder">
-              <zg:SymbolType>Square</zg:SymbolType>
-              <zg:LineWidth>1</zg:LineWidth>
-              <zg:CurveSettings />
-              <zg:Capacity xsi:nil="true" />
-              <zg:XMin xsi:nil="true" />
-              <zg:XMax xsi:nil="true" />
-              <zg:YMin xsi:nil="true" />
-              <zg:YMax xsi:nil="true" />
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:TableLayoutPanelBuilder">
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:ColumnCount>1</gui:ColumnCount>
+              <gui:RowCount>3</gui:RowCount>
+              <gui:ColumnStyles />
+              <gui:RowStyles>
+                <gui:RowStyle>
+                  <gui:SizeType>Percent</gui:SizeType>
+                  <gui:Height>0.15</gui:Height>
+                </gui:RowStyle>
+                <gui:RowStyle>
+                  <gui:SizeType>Percent</gui:SizeType>
+                  <gui:Height>0.15</gui:Height>
+                </gui:RowStyle>
+                <gui:RowStyle>
+                  <gui:SizeType>Percent</gui:SizeType>
+                  <gui:Height>0.7</gui:Height>
+                </gui:RowStyle>
+              </gui:RowStyles>
+              <gui:CellSpans />
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
-            <Edge From="0" To="2" Label="Source1" />
-            <Edge From="1" To="4" Label="Source1" />
+            <Edge From="1" To="6" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
-            <Edge From="3" To="4" Label="Source2" />
+            <Edge From="3" To="6" Label="Source2" />
             <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="5" To="6" Label="Source3" />
             <Edge From="6" To="7" Label="Source1" />
-            <Edge From="7" To="8" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
