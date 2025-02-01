@@ -19,7 +19,6 @@
                  xmlns:p10="clr-namespace:AindBehaviorWaterTuner.DataTypes;assembly=Extensions"
                  xmlns:p11="clr-namespace:;assembly=Extensions"
                  xmlns:gui="clr-namespace:Bonsai.Gui;assembly=Bonsai.Gui"
-                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:zg="clr-namespace:Bonsai.Gui.ZedGraph;assembly=Bonsai.Gui.ZedGraph"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
@@ -935,6 +934,16 @@
               <Name>Label</Name>
               <Workflow>
                 <Nodes>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="StringProperty">
+                      <Value>Waiting to start...</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>CurrentDelay</Name>
                   </Expression>
@@ -948,13 +957,10 @@
                     <Combinator xsi:type="rx:Zip" />
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>Measurement</Name>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:ElementIndex" />
+                    <Name>TaskLogicParameters</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
-                    <Selector>Index</Selector>
+                    <Selector>ValveOpenTime.Count</Selector>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:WithLatestFrom" />
@@ -962,6 +968,9 @@
                   <Expression xsi:type="Format">
                     <Format>Calibrating delay {0} ({1} / {2})</Format>
                     <Selector>Item1.Item2,Item1.Item1,Item2</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
@@ -973,23 +982,25 @@
                     <gui:Enabled>false</gui:Enabled>
                     <gui:Visible>true</gui:Visible>
                     <gui:Font>Microsoft Sans Serif, 15.75pt</gui:Font>
-                    <gui:Text />
+                    <gui:Text>Calibrating delay 0.05 (3 / 1)</gui:Text>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="0" To="3" Label="Source2" />
-                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="1" To="10" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
-                  <Edge From="3" To="7" Label="Source1" />
+                  <Edge From="2" To="5" Label="Source2" />
+                  <Edge From="3" To="4" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source2" />
-                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="5" To="8" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source2" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source2" />
                   <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -1036,22 +1047,21 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Zip" />
                   </Expression>
-                  <Expression xsi:type="InputMapping">
-                    <PropertyMappings>
-                      <Property Name="X" Selector="Item1" />
-                      <Property Name="Y" Selector="Item2" />
-                    </PropertyMappings>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="cv:CreatePoint2f">
-                      <cv:X>0</cv:X>
-                      <cv:Y>0</cv:Y>
-                    </Combinator>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>new(
+Item1 as ValveOpenTime,
+Item2 as Weight)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="zg:LineGraphBuilder">
+                    <zg:ValueSelector>ValveOpenTime,Weight</zg:ValueSelector>
                     <zg:SymbolType>Square</zg:SymbolType>
                     <zg:LineWidth>1</zg:LineWidth>
-                    <zg:CurveSettings />
+                    <zg:CurveSettings>
+                      <zg:CurveConfiguration>
+                        <zg:Label>Measurements</zg:Label>
+                        <zg:Color>#0000C0</zg:Color>
+                      </zg:CurveConfiguration>
+                    </zg:CurveSettings>
                     <zg:Capacity>1000</zg:Capacity>
                     <zg:XMin xsi:nil="true" />
                     <zg:XMax xsi:nil="true" />
@@ -1095,13 +1105,12 @@
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="8" To="13" Label="Source1" />
+                  <Edge From="7" To="12" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source2" />
-                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source2" />
+                  <Edge From="12" To="13" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
