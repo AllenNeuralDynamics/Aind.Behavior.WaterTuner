@@ -1095,7 +1095,15 @@ Item2 as Weight)</scr:Expression>
                   <Expression xsi:type="MemberSelector">
                     <Selector>DataFrame.Weight</Selector>
                   </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Timestamp" />
+                  </Expression>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>new(it.Value as Weight, it.Timestamp as Timestamp)</scr:Expression>
+                  </Expression>
                   <Expression xsi:type="zg:RollingGraphBuilder">
+                    <zg:IndexSelector>Timestamp</zg:IndexSelector>
+                    <zg:ValueSelector>Weight</zg:ValueSelector>
                     <zg:SymbolType>None</zg:SymbolType>
                     <zg:LineWidth>1</zg:LineWidth>
                     <zg:CurveSettings />
@@ -1125,12 +1133,14 @@ Item2 as Weight)</scr:Expression>
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="12" Label="Source1" />
+                  <Edge From="7" To="14" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source2" />
+                  <Edge From="14" To="15" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -1234,7 +1244,7 @@ Item2 as Weight)</scr:Expression>
               <gui:Name>HwShortcuts</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:ColumnCount>4</gui:ColumnCount>
+              <gui:ColumnCount>1</gui:ColumnCount>
               <gui:RowCount>4</gui:RowCount>
               <gui:ColumnStyles />
               <gui:RowStyles />
@@ -1260,10 +1270,28 @@ Item2 as Weight)</scr:Expression>
         </Workflow>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
-      <Expression xsi:type="gui:TabControlBuilder">
+      <Expression xsi:type="gui:TableLayoutPanelBuilder">
         <gui:Name>UserInterface</gui:Name>
         <gui:Enabled>true</gui:Enabled>
         <gui:Visible>true</gui:Visible>
+        <gui:ColumnCount>3</gui:ColumnCount>
+        <gui:RowCount>1</gui:RowCount>
+        <gui:ColumnStyles>
+          <gui:ColumnStyle>
+            <gui:SizeType>Percent</gui:SizeType>
+            <gui:Width>0.45</gui:Width>
+          </gui:ColumnStyle>
+          <gui:ColumnStyle>
+            <gui:SizeType>Percent</gui:SizeType>
+            <gui:Width>0.45</gui:Width>
+          </gui:ColumnStyle>
+          <gui:ColumnStyle>
+            <gui:SizeType>Percent</gui:SizeType>
+            <gui:Width>0.1</gui:Width>
+          </gui:ColumnStyle>
+        </gui:ColumnStyles>
+        <gui:RowStyles />
+        <gui:CellSpans />
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>CalibrationModel</Name>
