@@ -23,12 +23,12 @@ public class WaterCalibrationModel
 
             var delays = value.Select(x => x.ValveOpenTime).ToArray();
             var weights = value.Select(x => x.WaterWeight.Average()).ToArray();
-            var p = Fit.Line(delays, weights);
+            var p = Fit.Line(weights, delays);
 
             var output = new WaterValveCalibrationOutput(){
                 Offset = p.Item1,
                 Slope = p.Item2,
-                R2 = GoodnessOfFit.RSquared(delays.Select(x => p.Item1+p.Item2*x), weights),
+                R2 = GoodnessOfFit.RSquared(weights, delays.Select(x => p.Item1+p.Item2*x)),
                 IntervalAverage = value.ToDictionary(k => k.ValveOpenTime.ToString("0.0000"), v => v.WaterWeight.Average()),
                 ValidDomain = delays.ToList()
             };
